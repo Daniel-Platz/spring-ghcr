@@ -1,5 +1,4 @@
-name: Java test
-
+name: Java test with caching
 on:
   push:
     branches:
@@ -19,8 +18,15 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v5
         with:
-            java-version: '21'
-            distribution: 'temurin'
+          java-version: '21'
+          distribution: 'temurin'
 
+      - name: Cache Maven packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2/repository
+          key: maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: maven-${{ runner.os }}-
+      
       - name: Run tests
         run: mvn test
